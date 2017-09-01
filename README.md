@@ -40,7 +40,9 @@ Here is a high level overview of the important files in this project:
 
 ## Challenge
 
-The first scenario has been written for you. Over the next 60 minutes please implement as many of the remaining scenarios as you can within events.js (event dispatcher can be used both server-side and client-side). We're looking for simplicity in architecture and the correctness of the code. Make whatever changes you want to the scenario implementations and source code to accomplish that goal. Do not worry if you cannot finish all of them. Find a good stopping point and send us what you have. We are excited to see it! Zip up the entire directory and email it back to us.
+The first scenario has been written for you. Please implement as many of the remaining scenarios as you can within events.js (event dispatcher can be used both server-side and client-side). We're looking for simplicity in architecture and the correctness of the code. Make whatever changes you want to the scenario implementations and source code to accomplish that goal. Once complete, please zip up the entire directory and email it back to us. If the zip file is too large, you can remove the npm dependencies and other temporary files.
+
+We expect this to take 1-2 hours to complete.
 
 ### Support
 
