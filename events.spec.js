@@ -3,6 +3,9 @@
 const Events = require('./events');
 
 describe('Event Dispatcher', function() {
+    const createListeners = l => [...Array(l)].map(
+        () => jasmine.createSpy()
+    );
 
     let events;
     beforeEach(function() {
@@ -22,7 +25,7 @@ describe('Event Dispatcher', function() {
     });
 
     xit('can trigger an event', function() {
-        const listener = jasmine.createSpy('listener');
+        const [ listener ] = createListeners(1);
         events.on('foo', listener);
 
         events.trigger('foo');
@@ -42,7 +45,7 @@ describe('Event Dispatcher', function() {
     });
 
     xit('can trigger an event with arguments', function() {
-        const listener = jasmine.createSpy('listener');
+        const [ listener ] = createListeners(1);
         events.on('foo', listener);
 
         events.trigger('foo', 'bar', 'baz');
@@ -51,63 +54,82 @@ describe('Event Dispatcher', function() {
     });
 
     xit('can trigger multiple callbacks on an event', function() {
-        const listener1 = jasmine.createSpy('listener1');
-        const listener2 = jasmine.createSpy('listener2');
-        events.on('foo', listener1);
-        events.on('foo', listener2);
+        const listeners = createListeners(3);
+
+        listeners.forEach(l => events.on('foo', l));
 
         events.trigger('foo');
 
-        expect(listener1).toHaveBeenCalled();
-        expect(listener2).toHaveBeenCalled();
+        listeners.forEach(l => {
+            expect(l).toHaveBeenCalled();
+        });
     });
 
-    xit('can remove callbacks from an event', function() {
-        const listener = jasmine.createSpy('listener');
-        events.on('foo', listener);
+    xit('can remove all callbacks from an event', function() {
+        const listeners = createListeners(3);
+
+        listeners.forEach(l => events.on('foo', l));
 
         events.trigger('foo');
-        expect(listener.calls.length).toBe(1);
+
+        listeners.forEach(l => {
+            expect(l.calls.length).toBe(1);
+            l.reset();
+        });
 
         events.off('foo');
         events.trigger('foo');
-        expect(listener.calls.length).toBe(1);
+
+        listeners.forEach(l => {
+            expect(l.calls.length).toBe(0);
+        });
     });
 
     xit('can remove a specific callback from an event', function() {
-        const listener1 = jasmine.createSpy('listener1');
-        const listener2 = jasmine.createSpy('listener2');
-        events.on('foo', listener1);
-        events.on('foo', listener2);
+        const listeners = createListeners(3);
+
+        listeners.forEach(l => events.on('foo', l));
 
         events.trigger('foo');
-        expect(listener1.calls.length).toEqual(1);
-        expect(listener2.calls.length).toEqual(1);
 
-        events.off('foo', listener1);
+        listeners.forEach(l => {
+            expect(l.calls.length).toBe(1);
+            l.reset();
+        });
+
+        const listener2 = listeners[1];
+
+        events.off('foo', listener2);
         events.trigger('foo');
-        expect(listener1.calls.length).toEqual(1);
-        expect(listener2.calls.length).toEqual(2);
+
+        listeners.forEach((l) => {
+            expect(l.calls.length).toBe(
+                l === listener2 ? 0 : 1
+            );
+        });
     });
 
     xit('can remove a specific callback registered with a scope from an event', function() {
-        const listener1 = jasmine.createSpy('listener1');
-        const listener2 = jasmine.createSpy('listener2');
+        const listeners = createListeners(3);
 
-        const scope1 = {};
-        const scope2 = {};
-
-        events.on('foo', listener1, scope1);
-        events.on('foo', listener2, scope2);
+        listeners.forEach(l => events.on('foo', l, {}));
 
         events.trigger('foo');
-        expect(listener1.calls.length).toEqual(1);
-        expect(listener2.calls.length).toEqual(1);
 
-        events.off('foo', listener1);
+        listeners.forEach(l => {
+            expect(l.calls.length).toBe(1);
+            l.reset();
+        });
+
+        const listener2 = listeners[1];
+
+        events.off('foo', listener2);
         events.trigger('foo');
-        expect(listener1.calls.length).toEqual(1);
-        expect(listener2.calls.length).toEqual(2);
+
+        listeners.forEach((l) => {
+            expect(l.calls.length).toBe(
+                l === listener2 ? 0 : 1
+            );
+        });
     });
-
 });
