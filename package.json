@@ -9,7 +9,7 @@
     "watch": "jasmine-node --test-dir . --color --autotest"
   },
   "devDependencies": {
-    "eslint": "4.0.0",
+    "eslint": "4.18.2",
     "jasmine-core": "2.6.4",
     "jasmine-node": "1.14.5"
   }
